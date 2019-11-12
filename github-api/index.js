@@ -11,7 +11,6 @@ const githubAuth = async (req) => {
         githubusername,
         githubpassword,
         github_organization
-
     } = req.body
 
     if (github_organization == githubusername) {
@@ -158,7 +157,7 @@ app.use('/list-github-commits', async (req, res) => {
 });
 
 // Uncomment for Local
-app.listen(3000, () => console.log(`listening on port 3000!`));
+// app.listen(3000, () => console.log(`listening on port 3000!`));
 
 // Comment out for Local
-// module.exports.handler = serverless(app);
+module.exports.handler = serverless(app);

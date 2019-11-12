@@ -11,5 +11,5 @@ functions:
     handler: index.handler
     description: 'Api for management for Github'
     events:
-      - http: 'POST /list-github-repos'
-      - http: 'POST /list-github-commits'
+      - http: 'ANY /list-github-repos'
+      - http: 'ANY /list-github-commits'
