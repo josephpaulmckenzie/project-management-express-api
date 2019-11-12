@@ -2,9 +2,7 @@ const serverless = require('serverless-http');
 const https = require("https");
 const express = require('express');
 const app = express();
-
 app.use(express.json());
-
 
 const githubAuth = async (req) => {
     const {
@@ -12,9 +10,9 @@ const githubAuth = async (req) => {
         githubpassword,
         github_organization
     } = req.body
+    const auth = 'Basic ' + new Buffer.from(githubusername + ':' + githubpassword).toString('base64');
 
     if (github_organization == githubusername) {
-        const auth = 'Basic ' + new Buffer.from(githubusername + ':' + githubpassword).toString('base64');
         const options = {
             host: 'api.github.com',
             path: `/user/repos?per_page=1000&type=owner`,
@@ -26,7 +24,6 @@ const githubAuth = async (req) => {
         };
         return { "options": options, "githubusername": githubusername, "github_organization": github_organization }
     } else {
-        const auth = 'Basic ' + new Buffer.from(githubusername + ':' + githubpassword).toString('base64');
         const options = {
             host: 'api.github.com',
             path: `/orgs/${github_organization}/repos`,
