@@ -1,0 +1,14 @@
+service: csv-download-upload
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: us-east-1
+
+functions:
+  events-management-api:
+    handler: index.handler
+    description: 'Csvs'
+  events-management-api2:
+    handler: index.handler
+    description: 'Csvs'

@@ -1,0 +1,17 @@
+service: serverless-management-for-sqs-api
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: dev
+  region: us-east-1
+
+functions:
+  sqs-management-api:
+    handler: index.handler
+    description: 'Api for management of sqs queues'
+    events:
+      - http: 'GET /list-sqs-queues'
+      - http: 'POST /send-sqs-message'
+      - http: 'POST /purge-sqs-queue'
+      - http: 'POST /get-messages-from-sqs-queue'

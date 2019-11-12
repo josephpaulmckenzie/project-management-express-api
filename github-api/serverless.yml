@@ -1,0 +1,15 @@
+service: serverless-management-for-github-api
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: dev
+  region: us-east-1
+
+functions:
+  github-management-api:
+    handler: index.handler
+    description: 'Api for management for Github'
+    events:
+      - http: 'POST /list-github-repos'
+      - http: 'POST /list-github-commits'
