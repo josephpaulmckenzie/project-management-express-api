@@ -2,17 +2,22 @@ const serverless = require('serverless-http');
 const https = require("https");
 const express = require('express');
 const app = express();
+
 app.use(express.json());
+
 
 const githubAuth = async (req) => {
     const {
         githubusername,
         githubpassword,
         github_organization
+
     } = req.body
-    const auth = 'Basic ' + new Buffer.from(githubusername + ':' + githubpassword).toString('base64');
 
     if (github_organization == githubusername) {
+        console.log("Personal")
+
+        const auth = 'Basic ' + new Buffer.from(githubusername + ':' + githubpassword).toString('base64');
         const options = {
             host: 'api.github.com',
             path: `/user/repos?per_page=1000&type=owner`,
@@ -24,6 +29,8 @@ const githubAuth = async (req) => {
         };
         return { "options": options, "githubusername": githubusername, "github_organization": github_organization }
     } else {
+        console.log("ORG")
+        const auth = 'Basic ' + new Buffer.from(githubusername + ':' + githubpassword).toString('base64');
         const options = {
             host: 'api.github.com',
             path: `/orgs/${github_organization}/repos`,
@@ -110,16 +117,15 @@ app.use('/list-github-commits', async (req, res) => {
         headers: authDetails.options.headers
     };
 
-    const request = https.request(options, function (response) {
+    const request = https.request(options, (response) => {
         let body = '';
-        response.on("data", function (chunk) {
+        response.on("data", (chunk) => {
             body += chunk.toString('utf8');
         });
 
-        response.on("end", function () {
+        response.on("end", () => {
             const list = JSON.parse(body)
             try {
-
                 for (const commits of list) {
                     const {
                         name,
@@ -132,7 +138,7 @@ app.use('/list-github-commits', async (req, res) => {
                     if (searchforuser == commits.author.login) {
                         const result = {
                             "repo": `${githubrepo}`,
-                            "commiterName": `${name}`,
+                            "commiterName": `${commits.author.login}`,
                             "commiterEmail": `${email}`,
                             "commitDate": `${date}`,
                             "commitMessage": `${commitMessage}`,
@@ -154,7 +160,7 @@ app.use('/list-github-commits', async (req, res) => {
 });
 
 // Uncomment for Local
-// app.listen(3000, () => console.log(`listening on port 3000!`));
+app.listen(3001, () => console.log(`listening on port 3000!`));
 
 // Comment out for Local
-module.exports.handler = serverless(app);
+// module.exports.handler = serverless(app);
