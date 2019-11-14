@@ -173,7 +173,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/serverless-management-api/dev/1573758449457-2019-11-14T19:07:29.457Z/serverless-management-api.zip"
+                "S3Key": "serverless/serverless-management-api/dev/1573765345359-2019-11-14T21:02:25.359Z/serverless-management-api.zip"
               },
               "FunctionName": "serverless-management-api-dev-sqs-management-api",
               "Handler": "./sqs-api/index.handler",
@@ -193,14 +193,14 @@
               "IamRoleLambdaExecution"
             ]
           },
-          "SqsDashmanagementDashapiLambdaVersion05JC5q8GFs1XmtNWU3raZHV4Pr31MYnhCnykMkw": {
+          "SqsDashmanagementDashapiLambdaVersionyzQ7umwP792Li7Fp5wbjmcWZCVisZpw3889lmCd1FU": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "SqsDashmanagementDashapiLambdaFunction"
               },
-              "CodeSha256": "CsgiJsWehmkdphbi0q/qwQ6xF4hcsBHxQeLqX4uoB/A=",
+              "CodeSha256": "TJE3Bq4pRBX7KHjWMKszjH8gzm7LKAgG9m5xR0tDPEo=",
               "Description": "Api for management of sqs queues"
             }
           },
@@ -211,7 +211,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/serverless-management-api/dev/1573758449457-2019-11-14T19:07:29.457Z/serverless-management-api.zip"
+                "S3Key": "serverless/serverless-management-api/dev/1573765345359-2019-11-14T21:02:25.359Z/serverless-management-api.zip"
               },
               "FunctionName": "serverless-management-api-dev-lambda-management-api",
               "Handler": "./lambda-api/index.handler",
@@ -231,14 +231,14 @@
               "IamRoleLambdaExecution"
             ]
           },
-          "LambdaDashmanagementDashapiLambdaVersionubNYmsM9jPHllYQ6Ch9BNiVjgvwbKLlCWFOE3NUNs": {
+          "LambdaDashmanagementDashapiLambdaVersionXq4e1PyctJEokNK0wHLwImDEwQscyT3kRPCT7HaS0uc": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "LambdaDashmanagementDashapiLambdaFunction"
               },
-              "CodeSha256": "CsgiJsWehmkdphbi0q/qwQ6xF4hcsBHxQeLqX4uoB/A=",
+              "CodeSha256": "TJE3Bq4pRBX7KHjWMKszjH8gzm7LKAgG9m5xR0tDPEo=",
               "Description": "Api for management of lambda functions"
             }
           },
@@ -249,7 +249,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/serverless-management-api/dev/1573758449457-2019-11-14T19:07:29.457Z/serverless-management-api.zip"
+                "S3Key": "serverless/serverless-management-api/dev/1573765345359-2019-11-14T21:02:25.359Z/serverless-management-api.zip"
               },
               "FunctionName": "serverless-management-api-dev-github-management-api",
               "Handler": "./github-api/index.handler",
@@ -269,14 +269,14 @@
               "IamRoleLambdaExecution"
             ]
           },
-          "GithubDashmanagementDashapiLambdaVersionTUOLkcVVYWUSOCoq72fK4dGEVYW0Ottwk4UkNGaWlk": {
+          "GithubDashmanagementDashapiLambdaVersionBF5r13zPKVYAMwkNZkbYQ7bxWVxEsume9rGx0OFb74": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GithubDashmanagementDashapiLambdaFunction"
               },
-              "CodeSha256": "CsgiJsWehmkdphbi0q/qwQ6xF4hcsBHxQeLqX4uoB/A=",
+              "CodeSha256": "TJE3Bq4pRBX7KHjWMKszjH8gzm7LKAgG9m5xR0tDPEo=",
               "Description": "Api for management for Github"
             }
           },
@@ -287,7 +287,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/serverless-management-api/dev/1573758449457-2019-11-14T19:07:29.457Z/serverless-management-api.zip"
+                "S3Key": "serverless/serverless-management-api/dev/1573765345359-2019-11-14T21:02:25.359Z/serverless-management-api.zip"
               },
               "FunctionName": "serverless-management-api-dev-ec2-management-api",
               "Handler": "./ec2-api/index.handler",
@@ -307,14 +307,14 @@
               "IamRoleLambdaExecution"
             ]
           },
-          "Ec2DashmanagementDashapiLambdaVersionK9uH7JgY2yArLwnGjH0vkbBufrEa9djbnNhHtBfWu10": {
+          "Ec2DashmanagementDashapiLambdaVersioneQtOwclfKZ6Lactv9BZhwBeXTUORvEyV46pJSRoWs": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "Ec2DashmanagementDashapiLambdaFunction"
               },
-              "CodeSha256": "CsgiJsWehmkdphbi0q/qwQ6xF4hcsBHxQeLqX4uoB/A=",
+              "CodeSha256": "TJE3Bq4pRBX7KHjWMKszjH8gzm7LKAgG9m5xR0tDPEo=",
               "Description": "Api for management of Ec2 instances"
             }
           },
@@ -909,7 +909,7 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1573758435806": {
+          "ApiGatewayDeployment1573765331859": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -1088,25 +1088,25 @@
           "SqsDashmanagementDashapiLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "SqsDashmanagementDashapiLambdaVersion05JC5q8GFs1XmtNWU3raZHV4Pr31MYnhCnykMkw"
+              "Ref": "SqsDashmanagementDashapiLambdaVersionyzQ7umwP792Li7Fp5wbjmcWZCVisZpw3889lmCd1FU"
             }
           },
           "LambdaDashmanagementDashapiLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "LambdaDashmanagementDashapiLambdaVersionubNYmsM9jPHllYQ6Ch9BNiVjgvwbKLlCWFOE3NUNs"
+              "Ref": "LambdaDashmanagementDashapiLambdaVersionXq4e1PyctJEokNK0wHLwImDEwQscyT3kRPCT7HaS0uc"
             }
           },
           "GithubDashmanagementDashapiLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GithubDashmanagementDashapiLambdaVersionTUOLkcVVYWUSOCoq72fK4dGEVYW0Ottwk4UkNGaWlk"
+              "Ref": "GithubDashmanagementDashapiLambdaVersionBF5r13zPKVYAMwkNZkbYQ7bxWVxEsume9rGx0OFb74"
             }
           },
           "Ec2DashmanagementDashapiLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "Ec2DashmanagementDashapiLambdaVersionK9uH7JgY2yArLwnGjH0vkbBufrEa9djbnNhHtBfWu10"
+              "Ref": "Ec2DashmanagementDashapiLambdaVersioneQtOwclfKZ6Lactv9BZhwBeXTUORvEyV46pJSRoWs"
             }
           },
           "ServiceEndpoint": {
@@ -1285,7 +1285,7 @@
     "artifact": "/Users/josephmckenzie/Documents/Joes-Stuff/Project-Management/project-management-app-n-tools/express-api/.serverless/serverless-management-api.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/serverless-management-api/dev/1573758449457-2019-11-14T19:07:29.457Z",
+    "artifactDirectoryName": "serverless/serverless-management-api/dev/1573765345359-2019-11-14T21:02:25.359Z",
     "artifact": "serverless-management-api.zip"
   }
 }
