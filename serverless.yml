@@ -1,0 +1,34 @@
+service: serverless-management-api
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: dev
+  region: us-east-1
+functions:
+  sqs-management-api:
+    handler: ./sqs-api/index.handler
+    description: 'Api for management of sqs queues'
+    events:
+      - http: 'GET /list-sqs-queues'
+      - http: 'POST /send-sqs-message'
+      - http: 'POST /purge-sqs-queue'
+      - http: 'POST /get-messages-from-sqs-queue'
+  lambda-management-api:
+    handler: ./lambda-api/index.handler
+    description: 'Api for management of lambda functions'
+    events:
+      - http: 'GET /list-lambdas'
+  github-management-api:
+    handler: ./github-api/index.handler
+    description: 'Api for management for Github'
+    events:
+      - http: 'ANY /list-github-repos'
+      - http: 'ANY /list-github-commits'
+  ec2-management-api:
+    handler: ./ec2-api/index.handler
+    description: 'Api for management of Ec2 instances'
+    events:
+      - http: 'GET /list-ec2-instances'
+      - http: 'POST /start-ec2-instances'
+      - http: 'POST /stop-ec2-instances' 
+  
