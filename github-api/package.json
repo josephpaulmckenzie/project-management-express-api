@@ -9,6 +9,7 @@
   "author": "Joseph Mckenzie <joseph.p.mckenzie84@gmail.com> (https://www.github.com/josephpaulmckenzie)",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^8.2.0",
     "express": "^4.16.4",
     "node-fetch": "^2.6.0",
     "serverless-http": "^1.9.1"

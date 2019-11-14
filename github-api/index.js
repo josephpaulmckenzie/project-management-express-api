@@ -1,166 +1,155 @@
-const serverless = require('serverless-http');
-const https = require("https");
 const express = require('express');
+const fetch = require('node-fetch');
 const app = express();
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
-app.use(express.json());
+const githubAuth = async (githubUsername, githubToken) => {
+    console.log("Setting up the configuration for the Github API")
+    const auth = 'Basic ' + new Buffer.from(githubUsername + ':' + githubToken).toString('base64');
+    const config = {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'user-agent': githubUsername,
+            'Authorization': auth
+        },
+    }
+    return config
+}
 
-
-const githubAuth = async (req) => {
-    const {
-        githubusername,
-        githubpassword,
-        github_organization
-
-    } = req.body
-
-    if (github_organization == githubusername) {
-        console.log("Personal")
-
-        const auth = 'Basic ' + new Buffer.from(githubusername + ':' + githubpassword).toString('base64');
-        const options = {
-            host: 'api.github.com',
-            path: `/user/repos?per_page=1000&type=owner`,
-            method: 'GET',
-            headers: {
-                'user-agent': 'node.js',
-                'Authorization': auth
-            }
-        };
-        return { "options": options, "githubusername": githubusername, "github_organization": github_organization }
-    } else {
-        console.log("ORG")
-        const auth = 'Basic ' + new Buffer.from(githubusername + ':' + githubpassword).toString('base64');
-        const options = {
-            host: 'api.github.com',
-            path: `/orgs/${github_organization}/repos`,
-            method: 'GET',
-            headers: {
-                'user-agent': 'node.js',
-                'Authorization': auth
-            }
-        };
-        return { "options": options, "githubusername": githubusername, "github_organization": github_organization }
+const verifyRepoAndUserExists = async (githubConfig, searchforuser, githubRepo) => {
+    try {
+        console.log(`${searchforuser} is attempting to verify that the github repo ${githubRepo} exists`)
+        res = await fetch(`https://api.github.com/repos/${searchforuser}/${githubRepo}`, githubConfig)
+        if (res.status !== 200) {
+            throw new Error(`The Username or Repo entered was ${res.statusText}`)
+        }
+        console.log(`${searchforuser} verified that the github repo ${githubRepo} exists`)
+        return { user: await res.json(), found: res.status }
+    } catch (error) {
+        console.log(`Error when ${searchforuser} attempted to verify that the github repo ${githubRepo} exists ${error}`)
+        throw error
     }
 }
 
-app.use('/list-github-repos', async (req, res) => {
-    const authDetails = await githubAuth(req)
-    const results = [];
-
-    const request = https.request(authDetails.options, function (response) {
-        let body = '';
-        response.on("data", function (chunk) {
-            body += chunk.toString('utf8');
-        });
-
-        response.on("end", function () {
-            const list = JSON.parse(body);
-            try {
-                for (const repoDetails of list) {
-
-                    const {
-                        id,
-                        name,
-                        private,
-                        description = repoDetails.description === null || typeof undefined ? "Description" : description,
-                        language
-                    } = repoDetails
-
-                    const {
-                        login,
-                        avatar_url,
-                        html_url
-                    } = repoDetails.owner
-
-                    const result = {
-                        "id": `${id}`,
-                        "repoName": `${name}`,
-                        "private": `${private}`,
-                        "repoOwner": `${login}`,
-                        "avatar_url": `${avatar_url}`,
-                        "html_url": `${html_url}`,
-                        "description": `${description}`,
-                        "language": `${language}`
-                    };
-                    results.push(result);
-                }
-                res.status(200).json(results);
-            } catch (error) {
-                console.log(`Error when attempting to connect to Github: ${list.message}`)
-                res.status(response.statusCode).json({
-                    error: list.message
-                });
-            }
-        });
-    });
-    request.end();
-});
-
-app.use('/list-github-commits', async (req, res) => {
-    const authDetails = await githubAuth(req)
-    const results = [];
-    const {
-        githubrepo,
-        searchforuser
-    } = req.body
-
-    if (authDetails.github_organization == authDetails.githubusername) {
-        path = `/repos/${searchforuser}/${githubrepo}/commits`
-    } else {
-        path = `/repos/${authDetails.github_organization}/${githubrepo}/commits`
+const getRepoResults = async (githubConfig, searchforuser, githubRepo) => {
+    try {
+        console.log(`${searchforuser} is attempting to query the github repo ${githubRepo}`)
+        res = await fetch(`https://api.github.com/repos/${searchforuser}/${githubRepo}/commits`, githubConfig)
+        if (res.status !== 200) {
+            throw new Error(`The Username or Repo entered was ${res.statusText}`)
+        }
+        console.log(`${searchforuser} successfully queried the github repo ${githubRepo}`)
+        return { user: await res.json(), found: res.status }
+    } catch (error) {
+        console.log(`Error when ${searchforuser} attempted to query the github repo ${githubRepo} ${error}`)
+        throw error
     }
-    const options = {
-        host: 'api.github.com',
-        path: path,
-        method: 'GET',
-        headers: authDetails.options.headers
-    };
+}
 
-    const request = https.request(options, (response) => {
-        let body = '';
-        response.on("data", (chunk) => {
-            body += chunk.toString('utf8');
-        });
+const createGithubResultsJson = async (userResult, searchforuser, githubRepo) => {
 
-        response.on("end", () => {
-            const list = JSON.parse(body)
-            try {
-                for (const commits of list) {
-                    const {
-                        name,
-                        email,
-                        date,
+    try {
+        console.log(`Creating json response for ${searchforuser}'s repo ${githubRepo}`)
+        const searchResults = await userResult.user.map(d => (
+            {
+                "repo": githubRepo,
+                "loginId": `${d.author.login}`,
+                "commiterEmail": `${d.commit.author.email}`,
+                "commitDate": `${d.commit.author.date}`,
+                "commitMessage": `${d.commit.message}`,
+                "sha": `${d.sha}`
 
-                    } = commits.commit.committer
-                    const commitMessage = commits.commit.message;
-                    const sha = commits.commit.tree.sha;
-                    if (searchforuser == commits.author.login) {
-                        const result = {
-                            "repo": `${githubrepo}`,
-                            "commiterName": `${commits.author.login}`,
-                            "commiterEmail": `${email}`,
-                            "commitDate": `${date}`,
-                            "commitMessage": `${commitMessage}`,
-                            "sha": `${sha}`
-                        };
-                        results.push(result);
-                    }
-                }
-                res.status(200).json(results);
-
-            } catch (error) {
-                res.status(response.statusCode).json({
-                    error: list.message
-                });
             }
-        });
-    });
-    request.end();
+        ));
+        console.log(`Created json response for ${searchforuser}'s repo ${githubRepo}`)
+        return searchResults
+    } catch (error) {
+        const message = userResult.user.message || error
+        throw new Error(`Error creating json response for ${searchforuser}'s repo ${githubRepo}: ${message}`)
+    }
+}
+
+
+const checkUserType = async (githubUsername, searchforuser, githubConfig) => {
+    try {
+        console.log(searchforuser)
+        console.log(`${githubUsername} is attempting to check the type of Github account for ${searchforuser} `)
+        res = await fetch(`http://api.github.com/search/users?q=${searchforuser}`, githubConfig)
+        if (res.status !== 200) {
+            throw new Error(`The account entered was ${res.statusText}`)
+        }
+        const accountDetails = await res.json()
+        console.log(accountDetails.total_count)
+        if (accountDetails.total_count == 0) {
+            throw new Error("No results found")
+        }
+        const [{
+            login,
+            type,
+            site_admin,
+            score
+        }] = accountDetails.items
+
+        // console.log("repoType:", type, "score:", score)
+        console.log(`${githubUsername} checked the type of Github account for ${searchforuser} `)
+        return { repoType: type, score: score }
+    } catch (error) {
+        // console.log(`Error ${githubUsername} checking the type of Github account for ${searchforuser} ${error}`)
+        throw error
+    }
+}
+
+const getReposList = async (githubConfig, githubUsername, searchforuser, accountDetails) => {
+    try {
+        const typeofRepo = type === "User" ? "users" : "orgs";
+        console.log(`${githubUsername} is attempting to query the github account ${searchforuser}`)
+        res = await fetch(`http://api.github.com/${typeofRepo}/${searchforuser}/repos?q=per_page=1000`, githubConfig)
+        if (res.status !== 200) {
+            throw new Error(`The Username or Repo entered was ${res.statusText}`)
+        }
+        console.log(`${githubUsername} successfully queried the github account ${searchforuser}`)
+        return { user: await res.json(), found: res.status }
+    } catch (error) {
+        console.log(`Error when ${githubUsername} attempted to query the github account ${searchforuser} ${error}`)
+        throw error
+    }
+}
+
+app.use('/listcommits/:searchforuser/:githubRepo', async (req, res, next) => {
+    const { searchforuser, githubRepo } = req.params;
+    const { githubUsername, githubToken } = req.body
+
+    try {
+        const githubConfig = await githubAuth(githubUsername, githubToken);
+        await verifyRepoAndUserExists(githubConfig, searchforuser, githubRepo)
+        const userResult = await getRepoResults(githubConfig, searchforuser, githubRepo)
+        const results = await createGithubResultsJson(userResult, searchforuser, githubRepo)
+        console.log(`Returning json response for ${searchforuser}'s repo ${githubRepo} to the API`)
+        res.send(results);
+    } catch (error) {
+        res.status(400).send({ "error": error.message });
+        return next(error.message)
+    }
 });
 
-// Uncomment for Local
-app.listen(3001, () => console.log(`listening on port 3000!`));
+app.use('/listrepos/:searchforuser', async (req, res, next) => {
+    const { searchforuser } = req.params;
+    const { githubUsername, githubToken } = req.body
 
-// Comment out for Local
-// module.exports.handler = serverless(app);
+    try {
+        const githubConfig = await githubAuth(githubUsername, githubToken);
+        const accountDetails = await checkUserType(githubUsername, searchforuser, githubConfig)
+        const repoList = await getReposList(githubConfig, githubUsername, searchforuser, accountDetails)
+        res.send(repoList);
+    } catch (error) {
+        res.status(400).send({ "error": error.message });
+        return next(error.message)
+    }
+});
+
+const port = process.env.PORT || 3002;
+app.listen(port, () =>
+    console.log(`App listening on port ${port}!`));
