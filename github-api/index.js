@@ -119,6 +119,8 @@ const createGithubResultsJson = async (userResult, searchforuser, githubRepo) =>
 
             }
         ));
+
+
         console.log(`Created json response for ${searchforuser}'s repo ${githubRepo}`)
         return searchResults
     } catch (error) {
