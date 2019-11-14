@@ -37,7 +37,7 @@ jobs:
               if grep -Fxq $project build-directories.txt; then
                 printf "\nTriggerring build for project: \n" $project
                 curl -s -u c4254b884766854656fd102526185f7762fe5008: \
-                  -d build_parameters[CIRCLE_JOB]=project-management-express-api \
+                  -d build_parameters[CIRCLE_JOB]=build \
                   https://circleci.com/api/v1.1/project/github/josephpaulmckenzie/project-management-express-api/tree/master
               fi
             done
