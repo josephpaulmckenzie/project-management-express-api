@@ -65,7 +65,6 @@ app.use('/stop-ec2-instances', async (req, res) => {
         ],
     };
 
-
     try {
         console.log(`Attempting to stop ec2 instance ${instanceId}`)
         const data = await ec2.stopInstances(params).promise()
