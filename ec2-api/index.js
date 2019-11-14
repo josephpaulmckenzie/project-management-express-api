@@ -42,6 +42,7 @@ app.use('/start-ec2-instances', async (req, res) => {
             InstanceIds,
         ],
     };
+
     try {
         console.log(`Attempting to start ec2 instance ${instanceId}`)
         const data = await ec2.startInstances(params).promise();
