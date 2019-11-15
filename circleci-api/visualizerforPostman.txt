@@ -1,0 +1,54 @@
+# Needs to be in the test section for postman. Note this is only for visualizing the data returned in postman
+var errorTemplate = `
+    <style type="text/css">
+        .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}
+        .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}
+        .tftable tr {background-color:#ffffff;}
+        .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}
+        .tftable tr:hover {background-color:#e0ffff;}
+    </style>
+    
+    <table class="tftable" border="1">
+        <tr>
+            <th>Status Code</th>
+            <th> Error Message</th>
+        </tr>
+        <tr>
+            <td>{{response.statusCode}}</td>
+            <td>{{response.errorMessage }}</td>
+        </tr>
+    </table>`
+    
+    var template = `
+    <style type="text/css">
+        .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}
+        .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}
+        .tftable tr {background-color:#ffffff;}
+        .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}
+        .tftable tr:hover {background-color:#e0ffff;}
+    </style>
+    
+    <table class="tftable" border="1">
+        <tr>
+            <th>Status Code</th>
+            <th>Name</th>
+            <th>Login</th>
+            <th>Id</th>
+        </tr>
+        <tr>
+            <td>{{response.statusCode}}</td>
+            <td>{{response.accountDetails.name}}</td>
+            <td>{{response.accountDetails.login}}</td>
+            <td>{{response.accountDetails.id}}</td>
+        </tr>
+    </table>`
+    
+    if (pm.response.json().statusCode != 200){
+        pm.visualizer.set(errorTemplate, {
+    response: pm.response.json()
+});
+    } else {
+               pm.visualizer.set(template, {
+    response: pm.response.json()
+}); 
+    }

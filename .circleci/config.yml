@@ -38,7 +38,7 @@ jobs:
                 printf "\nTriggerring build for project: \n" $project
                 curl -s -u c4254b884766854656fd102526185f7762fe5008: \
                   -d build_parameters[CIRCLE_JOB]=${project} \
-                  https://circleci.com/api/v1.1/project/github/josephpaulmckenzie/project-management-express-api/tree/master
+                  https://circleci.com/api/v1.1/project/github/${CIRCLE_USERNAME}/${CIRCLE_PROJECT_REPONAME}/tree/${CIRCLE_BRANCH}
               fi
             done
   ec2-api:
