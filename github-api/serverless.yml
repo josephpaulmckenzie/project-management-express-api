@@ -1,15 +1,11 @@
-service: serverless-management-for-github-api
-
-provider:
-  name: aws
-  runtime: nodejs8.10
-  stage: dev
-  region: us-east-1
-
-functions:
   github-management-api:
-    handler: index.handler
+    package:
+      individually: true  
+      include:
+        - github-api/**
+    handler: github-api/index.handler
     description: 'Api for management for Github'
     events:
-      - http: 'ANY /list-github-repos'
-      - http: 'ANY /list-github-commits'
+      - http: 'ANY /listrepos/{searchforuser}'
+      - http: 'ANY /listcommits/{searchforuser}/{githubRepo}'
+      
