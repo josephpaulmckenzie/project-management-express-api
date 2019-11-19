@@ -49,7 +49,7 @@ const getAccountDetails = async (githubUsername, searchforuser, githubConfig) =>
         logger("Info", `${githubUsername} checked the type of Github account for ${searchforuser} `)
         return { repoType: type, score: score }
     } catch (error) {
-        // Oh no an error  
+        logger("Error", error.message)
         throw error
     }
 }
@@ -69,7 +69,7 @@ const getReposList = async (githubConfig, githubUsername, searchforuser, account
         logger("Info", `${githubUsername} successfully queried the github account ${searchforuser}`)
         return { user: await res.json(), found: res.status }
     } catch (error) {
-        logger("Error", `Error when ${githubUsername} attempted to query the github account ${searchforuser} ${error}`)
+        logger("Error", error.message)
         throw error
     }
 }
@@ -87,7 +87,7 @@ const verifyRepoExists = async (githubConfig, searchforuser, githubRepo) => {
         // waits for complete response before returning results
         return { user: await res.json(), found: res.status }
     } catch (error) {
-        logger("Error", `Error when ${searchforuser} attempted to verify that the github repo ${githubRepo} exists ${error}`)
+        logger("Error", error.message)
         throw error
     }
 }
@@ -104,7 +104,7 @@ const getRepoResultsFromSearch = async (githubConfig, searchforuser, githubRepo)
         logger("Info", `${searchforuser} successfully queried the github repo ${githubRepo}`)
         return { user: await res.json(), found: res.status }
     } catch (error) {
-        logger("Error", `Error when ${searchforuser} attempted to query the github repo ${githubRepo} ${error}`)
+        logger("Error", error.message)
         throw error
     }
 }
@@ -129,7 +129,8 @@ const createGithubResultsJson = async (userResult, searchforuser, githubRepo) =>
         return searchResults
     } catch (error) {
         const message = userResult.user.message || error
-        throw new Error(`Error creating json response for ${searchforuser}'s repo ${githubRepo}: ${message}`)
+        logger("Error", message)
+        throw error
     }
 }
 
@@ -146,8 +147,7 @@ app.use('/listcommits/:searchforuser/:githubRepo', async (req, res, next) => {
         logger("Info", `Returning json response for ${searchforuser}'s repo ${githubRepo} to the API`)
         res.send(results);
     } catch (error) {
-        res.status(400).send({ "error": error.message });
-        return next(error.message)
+        res.status(400).end({ "error": error.message });
     }
 });
 
@@ -161,8 +161,7 @@ app.use('/listrepos/:searchforuser', async (req, res, next) => {
         const repoList = await getReposList(githubConfig, githubUsername, searchforuser, accountDetails)
         res.send(repoList);
     } catch (error) {
-        res.status(400).send({ "error": error.message });
-        return next(error.message)
+        res.status(400).end(error.message);
     }
 });
 
