@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "aws-sdk": "^2.437.0",
+    "custom-logger": "file:../custom-logger",
     "dateformat": "^3.0.3",
     "express": "^4.16.4",
     "serverless-http": "^1.9.1"

@@ -9,6 +9,7 @@
   "author": "Joseph Mckenzie <joseph.p.mckenzie84@gmail.com> (https://www.github.com/josephpaulmckenzie)",
   "license": "ISC",
   "dependencies": {
+    "custom-logger": "file:../custom-logger",
     "loglevel": "^1.6.6",
     "node-fetch": "^2.6.0"
   }

@@ -33,6 +33,18 @@ The following apis our available:
                 1. List logs in individual streams 
         C. EC2 
         D. SQS
+    3. CircleCi
+        1. Trigger a test and build
+    4. Logging and alerts
+        1. Custom log messages with a cleaned up structure with additional log details
+        2. If an error or warning occurs will send a notification to intended person
+            1. We send alert messages via a sns topic which allows us to deliver messages 
+            a variety of ways. 
+                1. Email
+                2. Text
+                3. Slack
+                4. Push notifications to app
+                5. Using an Api endpoint and from there anyway we could pretty much conceive of 
        
 
     

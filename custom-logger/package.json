@@ -1,0 +1,15 @@
+{
+  "name": "custom-logger",
+  "version": "1.0.0",
+  "description": "A custom logging and alert system to give more detail in the stack trace of errors and in the event of errors to send an alert message to the correct people or person",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://www.github.com/josephpaulmckenzie"
+  },
+  "author": "Joseph Mckenzie",
+  "license": "ISC"
+}
