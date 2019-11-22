@@ -1,13 +1,8 @@
-service: serverless-management-for-ec2-api
-
-provider:
-  name: aws
-  runtime: nodejs8.10
-  stage: dev
-  region: us-east-1
-
-functions:
   ec2-management-api:
+    package:
+      individually: true  
+      include:
+        - ec2-api/**
     handler: index.handler
     description: 'Api for management of Ec2 instances'
     events:

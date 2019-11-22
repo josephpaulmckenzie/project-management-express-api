@@ -1,13 +1,8 @@
-const serverless = require('serverless-http');
-const express = require('express');
 const fetch = require('node-fetch');
-const logger = require('./logerror').format
-const app = express();
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+const logger = require('./logerror.js')
 
 const githubAuth = async (githubUsername, githubToken) => {
-    logger("Info", "Setting up the configuration for the Github API")
+    logger.info("Setting up the configuration for the Github API")
     const auth = 'Basic ' + new Buffer.from(githubUsername + ':' + githubToken).toString('base64');
     const config = {
         method: 'GET',
@@ -23,18 +18,21 @@ const githubAuth = async (githubUsername, githubToken) => {
 
 // First checks to make sure account exists and then will return account details containing account type,Github score,site_admin status and more.
 const getAccountDetails = async (githubUsername, searchforuser, githubConfig) => {
+    let statusCode;
     try {
-        logger("Info", `${githubUsername} is attempting to check the type of Github account for ${searchforuser} `)
-        res = await fetch(`http://api.github.com/search/users?q=${searchforuser}`, githubConfig)
+        logger.info(`${githubUsername} is attempting to check the type of Github account for ${searchforuser}`);
+        const res = await fetch(`http://api.github.com/search/users?q=${searchforuser}`, githubConfig);
         if (res.status !== 200) {
-            throw new Error(`The account entered was ${res.statusText}`)
+            statusCode = res.status;
+            throw new Error(`The account entered was ${res.statusText}`);
         }
-        const accountDetails = await res.json()
-        logger("Info", "Accounts: ", accountDetails.total_count)
+        const accountDetails = await res.json();
+        logger.info("Accounts: ", accountDetails.total_count);
         // If no results are found from searching the username/organization name 
         // then stop here and alert user
         if (accountDetails.total_count == 0) {
-            throw new Error(`No Github account found for ${searchforuser} `)
+            statusCode = 404;
+            throw new Error(`No Github account found for ${searchforuser}`);
         }
         // We can use destructuring to get the values for the json hash within the array
         // making it look cleaner and use less code. 
@@ -46,73 +44,77 @@ const getAccountDetails = async (githubUsername, searchforuser, githubConfig) =>
             score
         }] = accountDetails.items
 
-        logger("Info", `${githubUsername} checked the type of Github account for ${searchforuser} `)
+        logger.info(`${githubUsername} checked the type of Github account for ${searchforuser}`)
         return { repoType: type, score: score }
     } catch (error) {
-        logger("Error", error.message)
-        throw error
+        logger.error(error.message, statusCode)
+        throw { "message": error.message, "statusCode": statusCode }
     }
 }
 
 // Will get a list of repos for specified user or organization 
 const getReposList = async (githubConfig, githubUsername, searchforuser, accountDetails) => {
+    let statusCode;
     try {
         // Using the account type from when we ran getAccountDetails we can say what endpoint to use
         // to retrieve the repo list . If the account type is "User" the we want to use "users" and
         // if account type is "organization" then we use "orgs"
         const accountType = accountDetails.repoType === "User" ? "users" : "orgs";
-        logger("Info", `${githubUsername} is attempting to query the github account ${searchforuser}`)
-        res = await fetch(`http://api.github.com/${accountType}/${searchforuser}/repos?q=per_page=1000`, githubConfig)
+        logger.info(`${githubUsername} is attempting to query the github account ${searchforuser}`)
+        const res = await fetch(`http://api.github.com/${accountType}/${searchforuser}/repos?q=per_page=1000`, githubConfig)
         if (res.status !== 200) {
+            statusCode = res.status;
             throw new Error(`The Username or Repo entered was ${res.statusText}`)
         }
-        logger("Info", `${githubUsername} successfully queried the github account ${searchforuser}`)
+        logger.info(`${githubUsername} successfully queried the github account ${searchforuser}`)
         return { user: await res.json(), found: res.status }
     } catch (error) {
-        logger("Error", error.message)
-        throw error
+        logger.error(error.message)
+        throw { "message": error.message, "statusCode": statusCode };
     }
 }
 
 // Since We have successfully verified above that the account exists now we want to check to make sure the repo exists as well 
 const verifyRepoExists = async (githubConfig, searchforuser, githubRepo) => {
+    let statusCode;
     try {
-        logger("Info", `${searchforuser} is attempting to verify that the github repo ${githubRepo} exists`)
-        res = await fetch(`https://api.github.com/repos/${searchforuser}/${githubRepo}`, githubConfig)
+        logger.info(`${searchforuser} is attempting to verify that the github repo ${githubRepo} exists`)
+        const res = await fetch(`https://api.github.com/repos/${searchforuser}/${githubRepo}`, githubConfig)
         // We have to check for a status code because a non 200 code will not throw an error on its own
         if (res.status !== 200) {
+            statusCode = res.status;
             throw new Error(`The Repo ${githubRepo} in ${searchforuser} was ${res.statusText}`)
         }
-        logger("Info", `${searchforuser} verified that the github repo ${githubRepo} exists`)
+        logger.info(`${searchforuser} verified that the github repo ${githubRepo} exists`)
         // waits for complete response before returning results
         return { user: await res.json(), found: res.status }
     } catch (error) {
-        logger("Error", error.message)
-        throw error
+        logger.error(error.message)
+        throw { "message": error.message, "statusCode": statusCode };
     }
 }
 
-
-
 const getRepoResultsFromSearch = async (githubConfig, searchforuser, githubRepo) => {
+    let statusCode;
     try {
-        logger("Info", `${searchforuser} is attempting to query the github repo ${githubRepo}`)
-        res = await fetch(`https://api.github.com/repos/${searchforuser}/${githubRepo}/commits`, githubConfig)
+        logger.info(`${searchforuser} is attempting to query the github repo ${githubRepo}`)
+        const res = await fetch(`https://api.github.com/repos/${searchforuser}/${githubRepo}/commits`, githubConfig)
         if (res.status !== 200) {
+            statusCode = res.status;
             throw new Error(`The Username or Repo entered was ${res.statusText}`)
         }
-        logger("Info", `${searchforuser} successfully queried the github repo ${githubRepo}`)
+        logger.info(`${searchforuser} successfully queried the github repo ${githubRepo}`)
         return { user: await res.json(), found: res.status }
     } catch (error) {
-        logger("Error", error.message)
-        throw error
+        logger.error(error.message)
+        throw { "message": error.message, "statusCode": statusCode };
     }
 }
 
 // Now that we have the response back from the Github API we can make the hash containing just the details we want
 const createGithubResultsJson = async (userResult, searchforuser, githubRepo) => {
     try {
-        logger("Info", `Creating json response for ${searchforuser}'s repo ${githubRepo}`)
+        logger.info(`Creating json response for ${searchforuser}'s repo ${githubRepo}`)
         const searchResults = await userResult.user.map(d => (
             {
                 "repo": githubRepo,
@@ -125,50 +127,76 @@ const createGithubResultsJson = async (userResult, searchforuser, githubRepo) =>
             }
         ));
 
-        logger("Info", `Created json response for ${searchforuser}'s repo ${githubRepo}`)
+        logger.info(`Created json response for ${searchforuser}'s repo ${githubRepo}`)
         return searchResults
     } catch (error) {
         const message = userResult.user.message || error
-        logger("Error", message)
-        throw error
+        logger.error(message)
+        throw { "message": message, "statusCode": 400 };
     }
 }
 
-
-app.use('/listcommits/:searchforuser/:githubRepo', async (req, res, next) => {
-    const { searchforuser, githubRepo } = req.params;
-    const { githubUsername, githubToken } = req.body
+const listcommits = async (pathParameters, body) => {
     try {
+        const { searchforuser, githubRepo } = pathParameters;
+        const { githubUsername, githubToken } = body;
         const githubConfig = await githubAuth(githubUsername, githubToken);
-        await getAccountDetails(githubUsername, searchforuser, githubConfig)
-        await verifyRepoExists(githubConfig, searchforuser, githubRepo)
-        const userResult = await getRepoResultsFromSearch(githubConfig, searchforuser, githubRepo)
-        const results = await createGithubResultsJson(userResult, searchforuser, githubRepo)
-        logger("Info", `Returning json response for ${searchforuser}'s repo ${githubRepo} to the API`)
-        res.send(results);
+        await getAccountDetails(githubUsername, searchforuser, githubConfig);
+        await verifyRepoExists(githubConfig, searchforuser, githubRepo);
+        const userResult = await getRepoResultsFromSearch(githubConfig, searchforuser, githubRepo);
+        const results = await createGithubResultsJson(userResult, searchforuser, githubRepo);
+        logger.info(`Returning json response for ${searchforuser}'s repo ${githubRepo} to the API`);
+        return results;
     } catch (error) {
-        res.status(400).end({ "error": error.message });
+        logger.error(error);
+        return error.message;
     }
-});
 
-app.use('/listrepos/:searchforuser', async (req, res, next) => {
-    const { searchforuser } = req.params;
-    const { githubUsername, githubToken } = req.body
+};
+
+const listrepos = async (pathParameters, body) => {
+    const githubUserDetails = JSON.parse(body)
+    const githubSearchDetails = pathParameters
+    const { githubUsername, githubToken } = githubUserDetails
+    const { searchforuser, githubRepo } = githubSearchDetails;
 
     try {
         const githubConfig = await githubAuth(githubUsername, githubToken);
         const accountDetails = await getAccountDetails(githubUsername, searchforuser, githubConfig)
         const repoList = await getReposList(githubConfig, githubUsername, searchforuser, accountDetails)
-        res.send(repoList);
+        return repoList;
     } catch (error) {
-        res.status(400).end(error.message);
+        console.log(error)
+        return error
     }
-});
+}
 
-// const port = process.env.PORT || 3002;
-// app.listen(port, () =>
-//     console.log(`App listening on port ${port}!`));
+exports.handler = async function (event) {
+    // event.context['http-method']
+    console.log(event)
+    const {
+        pathParameters,
+        body
+    } = event
+    console.log("pathParameters", pathParameters)
+    console.log("body", body)
+    const path = event.path.split("/")[1]
+    console.log("path", path)
+    if (path == "listrepos") {
+        console.log("in if listrepos")
+        const listreposResponse = await listrepos(pathParameters, body)
+        return {
+            statusCode: listreposResponse.statusCode,
+            body: JSON.stringify(listreposResponse),
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            }
+        }
+    }
 
-
-// Comment out for local
-module.exports.handler = serverless(app);
+    if (path == "listcommits") {
+        listcommits(pathParameters, body)
+    }
+    // return body
+}

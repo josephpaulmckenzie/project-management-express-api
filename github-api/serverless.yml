@@ -1,11 +1,40 @@
-  github-management-api:
-    package:
-      individually: true  
-      include:
-        - github-api/**
-    handler: github-api/index.handler
+service: github-api
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: dev
+  region: us-east-1
+  ## If We want to have logs for our api we have to turn them on by default it is set to false
+  ## While we may have logs in our lambda functions this could prove useful for debugging
+  ## It does seem to generate a lot of logs so that is something to keep an eye on lest we
+  ## get a huge bill for cloudwatch logs
+  logs:
+    restApi: true
+functions:  
+  github-api:
+    handler: index.handler
     description: 'Api for management for Github'
     events:
-      - http: 'ANY /listrepos/{searchforuser}'
-      - http: 'ANY /listcommits/{searchforuser}/{githubRepo}'
-      
+      - http:
+          path: listrepos/{searchforuser}
+          method: ANY
+          # authorizer: aws_iam
+          # if we want to use a custom authorizer that is on aws but not within this service
+          # authorizer: xxx:xxx:Lambda-Name
+          # If our authorizer exists within this service we can define the function and 
+          # just refer to it by name
+          request:
+            parameters:
+              paths:
+                searchforuser: true
+      - http:
+          path: listcommits/{searchforuser}/{githubRepo}
+          method: ANY
+          request:
+            parameters:
+              paths:
+              # We can specify that the user has entered parameters in the url.
+              # It makes sense to check that we have at least something to search on before
+              # attempting to hit our lambda 
+                searchforuser: true
+                githubRepo: true

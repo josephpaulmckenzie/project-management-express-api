@@ -11,7 +11,7 @@ var response = {
         id: '6df6869aad4a263f2ca1210a14eed16bea89e24c',
         tree_id: 'e85865f9dbb4a1738aad3581ecdd0db87f82d821',
         distinct: true,
-        message: 'got back all pusher/commiter and parsed through info working on repo owner now',
+        message: 'got back all pusher/commiter and parsed through  working on repo owner now',
         timestamp: '2019-04-16T19:32:17-04:00',
         url: 'https://github.com/josephpaulmckenzie/project-manager/commit/6df6869aad4a263f2ca1210a14eed16bea89e24c',
         author: [Object],
@@ -24,7 +24,7 @@ var response = {
         id: '6df6869aad4a263f2ca1210a14eed16bea89e24c',
         tree_id: 'e85865f9dbb4a1738aad3581ecdd0db87f82d821',
         distinct: true,
-        message: 'got back all pusher/commiter and parsed through info working on repo owner now',
+        message: 'got back all pusher/commiter and parsed through  working on repo owner now',
         timestamp: '2019-04-16T19:32:17-04:00',
         url: 'https://github.com/josephpaulmckenzie/project-manager/commit/6df6869aad4a263f2ca1210a14eed16bea89e24c',
         author: {
