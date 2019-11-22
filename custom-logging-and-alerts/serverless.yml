@@ -1,0 +1,14 @@
+service: custom-logging-and-alerts
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: dev
+  region: us-east-1
+  custom-logging-and-alerts:
+    handler: index.handler
+    description: Creates customized console logs and sends alerts to a sns topic on any errors or warnings
+layers:
+  log-layer:
+    path: layer
+    compatibleRuntimes:
+      - nodejs8.10

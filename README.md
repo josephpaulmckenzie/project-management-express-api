@@ -1,6 +1,6 @@
 
 
-This is a collection of api's that I made to better manage my serverless ( and more ) 
+This is a collection of apis that I made to better manage my serverless ( and more ) 
 architecure on AWs and github.
 
 The following apis our available:
@@ -9,7 +9,7 @@ The following apis our available:
         B. List Commits on repos (both personal and organization accounts)
             1. List commits on repo as a whole
             2. List commits on repo based on username search
-    2. AWS Apis.
+    2. AWS Api.
         A. Lambda
             1. List lambdas in specified region 
             2. Update description on individual lambda
