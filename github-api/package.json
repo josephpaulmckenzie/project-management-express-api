@@ -1,16 +1,18 @@
 {
-  "name": "express-api",
+  "name": "github-api",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Joseph Mckenzie <joseph.p.mckenzie84@gmail.com> (https://www.github.com/josephpaulmckenzie)",
+  "author": "Joseph Paul Mckenzie <joseph.p.mckenzie84@gmail.com> (https://www.github.com/josephpaulmckernzie)",
   "license": "ISC",
   "dependencies": {
-    "custom-logger": "file:../custom-logger",
-    "loglevel": "^1.6.6",
+    "custom-logging-and-alerts": "file:../node_modules_and_lambda_layers/custom-logging-and-alerts",
     "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "@types/node-fetch": "^2.5.4"
   }
 }
