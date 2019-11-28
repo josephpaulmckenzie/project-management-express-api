@@ -1,23 +1,8 @@
-import logger = require("custom-logging-and-alerts");
-const fetch = require('node-fetch');
-
-
+import logger from "custom-logging-and-alerts"
+// import fetch from "node-fetch"
+import fetch, { Response } from 'node-fetch';
 import { Url } from "url";
 import { Hash } from "crypto";
-
-
-interface GithubAuthInterface {
-
-    method: string;
-    headers: {
-        'Accept': string,
-        'Content-Type': string,
-        'user-agent': string,
-        'Authorization': string
-    }
-}
-
-
 
 interface GithubAuthInterface {
 
@@ -93,7 +78,7 @@ const getAccountDetails = async (githubUsername: string, searchForUser: string, 
     let statusCode: number;
     try {
         logger.info(`${githubUsername} is attempting to check the type of Github account for ${searchForUser}`);
-        const res = await fetch(`http://api.github.com/search/users?q=${searchForUser}`, githubConfig);
+        const res: Response = await fetch(`http://api.github.com/search/users?q=${searchForUser}`, githubConfig);
         if (res.status !== 200) {
             statusCode = res.status;
             throw new Error(`The account entered was ${res.statusText}`);
@@ -108,13 +93,13 @@ const getAccountDetails = async (githubUsername: string, searchForUser: string, 
         }
         // We can use destructuring to get the values for the json hash within the array
         // making it look cleaner and use less code. 
-        const {
+        const [{
             login,
             type,
             organizations_url,
             site_admin,
             score
-        } = accountDetails.items[0]
+        }] = accountDetails.items
 
         logger.info(`${githubUsername} checked the type of Github account for ${searchForUser}`)
         return { type: type, score: score }
@@ -126,16 +111,18 @@ const getAccountDetails = async (githubUsername: string, searchForUser: string, 
 }
 
 const getReposList = async (githubConfig: GithubAuthInterface, githubUsername: string, searchForUser: string,
-    accountDetails: any) => {
+    accountDetails: GithubAccountDetails) => {
     let statusCode: number;
     try {
         // Using the account type from when we ran getAccountDetails we can say what endpoint to use
         // to retrieve the repo list . If the account type is "User" the we want to use "users" and
         // if account type is "organization" then we use "orgs"
-        const type = accountDetails.type
+        const [{
+            type,
+        }] = accountDetails.items
         const accountType: string = type === "User" ? "users" : "orgs";
         logger.info(`${githubUsername} is attempting to query the github account ${searchForUser}`)
-        const res = await fetch(`http://api.github.com/${accountType}/${searchForUser}/repos?q=per_page=1000`, githubConfig)
+        const res: Response = await fetch(`http://api.github.com/${accountType}/${searchForUser}/repos?q=per_page=1000`, githubConfig)
         if (res.status !== 200) {
             statusCode = res.status;
             throw new Error(`The Username or Repo entered was ${res.statusText}`)
@@ -153,7 +140,7 @@ const verifyRepoExists = async (githubConfig: GithubAuthInterface, searchForUser
     let statusCode: number;
     try {
         logger.info(`${searchForUser} is attempting to verify that the github repo ${githubRepo} exists`)
-        const res = await fetch(`https://api.github.com/repos/${searchForUser}/${githubRepo}`, githubConfig)
+        const res: Response = await fetch(`https://api.github.com/repos/${searchForUser}/${githubRepo}`, githubConfig)
         // We have to check for a status code because a non 200 code will not throw an error on its own
         if (res.status !== 200) {
             statusCode = res.status;
@@ -172,7 +159,7 @@ const getRepoResultsFromSearch = async (githubConfig: GithubAuthInterface, searc
     let statusCode;
     try {
         logger.info(`${searchForUser} is attempting to query the github repo ${githubRepo}`)
-        const res = await fetch(`https://api.github.com/repos/${searchForUser}/${githubRepo}/commits`, githubConfig)
+        const res: Response = await fetch(`https://api.github.com/repos/${searchForUser}/${githubRepo}/commits`, githubConfig)
         if (res.status !== 200) {
             statusCode = res.status;
             throw new Error(`The Username or Repo entered was ${res.statusText}`)
