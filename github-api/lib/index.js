@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const logger = require("custom-logging-and-alerts");
 // tslint:disable-next-line: no-var-requires
 const fetch = require("node-fetch");
-module.exports.githubAuth = (githubUsername, githubToken) => {
+const githubAuth = (githubUsername, githubToken) => {
     logger.info("Setting up the configuration for the Github API");
     // Takes in a string of the username and the token and converts it to a bae64 (or multiple other methods) encrypted string.
     const authorization = "Basic " +
@@ -202,4 +202,6 @@ exports.handler = async (event) => {
     }
     // return body
 };
+
+module.exports.githubAuth = githubAuth;
 //# sourceMappingURL=index.js.map
