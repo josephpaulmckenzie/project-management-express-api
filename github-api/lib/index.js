@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const logger = require("custom-logging-and-alerts");
 // tslint:disable-next-line: no-var-requires
 const fetch = require("node-fetch");
-const githubAuth = (githubUsername, githubToken) => {
+module.exports.githubAuth = (githubUsername, githubToken) => {
     logger.info("Setting up the configuration for the Github API");
     // Takes in a string of the username and the token and converts it to a bae64 (or multiple other methods) encrypted string.
     const authorization = "Basic " +
@@ -20,6 +20,7 @@ const githubAuth = (githubUsername, githubToken) => {
     };
     return config;
 };
+
 // First checks to make sure account exists and then will return account details containing account type,Github score,site_admin status and more.
 const getAccountDetails = async (githubUsername, searchforuser, githubConfig) => {
     let statusCode;
@@ -163,6 +164,9 @@ const listrepos = async (pathParameters, body) => {
         return error;
     }
 };
+
+
+
 exports.handler = async (event) => {
     // event.context['http-method']
     console.log(event);

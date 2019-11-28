@@ -4,18 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
-    "build": "tsc",
     "format": "prettier --write \"src/*.ts\" \"lib/*.js\"",
     "lint": "tslint -p tsconfig.json",
-    "deploy": "sls deploy",
-    "doitall": "bash deployscript.sh"
+    "test": "jest --silent",
+    "build": "tsc",
+    "deploy": "sls deploy"
   },
   "author": "Joseph Paul Mckenzie <joseph.p.mckenzie84@gmail.com> (https://www.github.com/josephpaulmckenzie)",
   "license": "ISC",
   "dependencies": {
     "custom-logging-and-alerts": "file:../node_modules_and_lambda_layers/custom-logging-and-alerts",
-    "node-fetch": "^2.6.0"
+    "dot-env": "0.0.1",
+    "dotenv": "^8.2.0",
+    "node-fetch": "^2.6.0",
+    "ts-jest": "^24.2.0"
   },
   "devDependencies": {
     "@types/node-fetch": "^2.5.4",

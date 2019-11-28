@@ -1,6 +1,7 @@
 service: github-api
 package:
   individually: true
+  # We do not want to include a lot of the files we have so we will exclude them all and include them on a per file (folder basis)
   exclude:
     - "**/*"
 provider:
@@ -11,6 +12,7 @@ provider:
 functions:  
   github-api:
     handler: lib/index.handler
+    #  We can include just the files or folders we want as to not bloat the package we deploy
     package:
       include:
         - lib/index.js
