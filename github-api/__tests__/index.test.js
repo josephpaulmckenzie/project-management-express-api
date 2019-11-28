@@ -28,3 +28,17 @@ describe('Github Authorization Header', () => {
     });
   });
 });
+
+describe('Github Account Type', () => {
+  const auth = index.githubAuth(process.env.userAgent, process.env.authorization);
+  test('Account Type is User', async () => {
+    const accountDetails = await index.getAccountDetails(process.env.userAgent, process.env.accountTypeUser, auth);
+    const accountType = accountDetails.type;
+    expect(accountType).toBe('User');
+  });
+  test('Account Type is Organization', async () => {
+    const accountDetails = await index.getAccountDetails(process.env.userAgent, process.env.accountTypeOrg, auth);
+    const accountType = accountDetails.type;
+    expect(accountType).toBe('Organization');
+  });
+});
