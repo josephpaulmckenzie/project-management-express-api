@@ -34,28 +34,32 @@ describe('Github Authorization Header', () => {
 
 describe('Check User\'s repo status', async () => {
   const auth = index.githubAuth(process.env.userAgent, process.env.authorization);
+  const exists = await index.verifyRepoExists(auth, process.env.userAgent, process.env.userRepo);
   test('User Repo Exists', async () => {
-    const exists = await index.verifyRepoExists(auth, process.env.userAgent, process.env.userRepo);
     expect(exists.found).toBe(200);
   });
   test('Repo type is User', async () => {
-    const exists = await index.verifyRepoExists(auth, process.env.userAgent, process.env.userRepo);
     const repoType = exists.user.owner.type;
     expect(repoType).toBe("User");
   });
   test('Repo type is public', async () => {
-    const exists = await index.verifyRepoExists(auth, process.env.userAgent, process.env.userRepo);
     const repoPrivate = exists.user.private;
     expect(repoPrivate).toBe(false);
   });
   test('User\'s Repo name comes back correct', async () => {
-    const exists = await index.verifyRepoExists(auth, process.env.userAgent, process.env.userRepo);
     const repoName = exists.user.name;
     expect(repoName).toBe("project-management-typescript-api");
   });
   test('User\'s Repo owner name comes back correct', async () => {
-    const exists = await index.verifyRepoExists(auth, process.env.userAgent, process.env.userRepo);
     const ownerName = exists.user.owner.login;
     expect(ownerName).toBe("josephpaulmckenzie");
   });
 });
+
+// describe('Check for commits', async () => {
+//   const auth = index.githubAuth(process.env.userAgent, process.env.authorization);
+//   test('Commits are returned on searched user for repo', async () => {
+//     const exists = await index.verifyRepoExists(auth, process.env.userAgent, process.env.userRepo);
+//     expect(exists.found).toBe(200);
+//   });
+// });
