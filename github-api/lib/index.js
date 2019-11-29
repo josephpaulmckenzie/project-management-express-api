@@ -205,4 +205,6 @@ exports.handler = async (event) => {
 
 module.exports.githubAuth = githubAuth;
 module.exports.getAccountDetails = getAccountDetails;
+module.exports.getReposList = getReposList;
+module.exports.verifyRepoExists = verifyRepoExists;
 //# sourceMappingURL=index.js.map
