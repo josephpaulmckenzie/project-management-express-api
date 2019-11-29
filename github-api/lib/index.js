@@ -7,8 +7,7 @@ const fetch = require("node-fetch");
 const githubAuth = (githubUsername, githubToken) => {
     logger.info("Setting up the configuration for the Github API");
     // Takes in a string of the username and the token and converts it to a bae64 (or multiple other methods) encrypted string.
-    const authorization = "Basic " +
-        Buffer.from(githubUsername + ":" + githubToken).toString("base64");
+    const authorization = "Basic " + Buffer.from(githubUsername + ":" + githubToken).toString("base64");
     const config = {
         method: "GET",
         headers: {
@@ -18,6 +17,7 @@ const githubAuth = (githubUsername, githubToken) => {
             Authorization: authorization
         }
     };
+    console.log("!!!!!!!!!!", config)
     return config;
 };
 
@@ -50,7 +50,9 @@ const getAccountDetails = async (githubUsername, searchforuser, githubConfig) =>
         logger.error(error.message, statusCode);
         throw { message: error.message, statusCode };
     }
+
 };
+
 const getReposList = async (githubConfig, githubUsername, searchforuser, accountDetails) => {
     let statusCode;
     try {
@@ -93,6 +95,7 @@ const verifyRepoExists = async (githubConfig, searchforuser, githubRepo) => {
         throw { message: error.message, statusCode };
     }
 };
+
 const getRepoResultsFromSearch = async (githubConfig, searchforuser, githubRepo) => {
     let statusCode;
     try {
