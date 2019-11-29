@@ -21,10 +21,15 @@ describe('Github Authorization Header', () => {
       // Just want to make sure we have a value here because it can change depending on the username used during testing
       expect(typeof userAgent).toBe('string');
     });
-    test('Authorization header has Basic ', () => {
+    test('Authorization header is base64 encrypted ', () => {
+      // Regex magic :P 
+      const base64Regex = /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i;
       const authorization = headers.Authorization;
+      // We need to strip out the word Basic to test to see if our authToken is valid base64 encrypted string
+      const authToken = authorization.replace("Basic ", "");
+      const isBase64Valid = base64Regex.test(authToken);
       // Just want to make sure we have a value here because it can change depending on the token used during testing
-      expect(authorization).toMatch('Basic ');
+      expect(isBase64Valid).toBe(true);
     });
   });
 });
@@ -43,17 +48,14 @@ describe('Github Account Type', () => {
   });
 });
 
-
 describe('Github repo list for user Account', () => {
   const githubUsername = process.env.userAgent;
   const githubAuthorization = process.env.authorization;
   const auth = index.githubAuth(githubUsername, githubAuthorization);
   test('Status Code is 200', async () => {
     const accountDetails = await index.getAccountDetails(githubUsername, process.env.userAccount, auth);
-    const accountType = accountDetails.type;
     const getReposList = await index.getReposList(auth, githubUsername, githubUsername, accountDetails);
     const statusCode = getReposList.statusCode;
-    const repoCount = getReposList.user.length;
     // Makes sure that we have gotten a 200 response from Github when trying to get a list of repos in
     expect(statusCode).toBe(200);
   });
@@ -61,11 +63,10 @@ describe('Github repo list for user Account', () => {
     const accountDetails = await index.getAccountDetails(githubUsername, process.env.userAccount, auth);
     const getReposList = await index.getReposList(auth, githubUsername, githubUsername, accountDetails);
     const repoCount = getReposList.user.length;
-    //   // Checks to make sure we have at least 1 repo in the account searched.
+    // Checks to make sure we have at least 1 repo in the account searched.
     expect(repoCount).toBeGreaterThan(0);
   });
 });
-
 
 describe('Github repo list for Organization  Account', () => {
   const githubUsername = process.env.userAgent;
@@ -84,7 +85,7 @@ describe('Github repo list for Organization  Account', () => {
     const accountDetails = await index.getAccountDetails(githubUsername, process.env.userAccount, auth);
     const getReposList = await index.getReposList(auth, githubUsername, githubUsername, accountDetails);
     const repoCount = getReposList.user.length;
-    //   // Checks to make sure we have at least 1 repo in the account searched.
+    // Checks to make sure we have at least 1 repo in the account searched.
     expect(repoCount).toBeGreaterThan(0);
   });
 });
