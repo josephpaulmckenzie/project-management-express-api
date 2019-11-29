@@ -32,23 +32,24 @@ describe('Github Authorization Header', () => {
 describe('Github Account Type', () => {
   const auth = index.githubAuth(process.env.userAgent, process.env.authorization);
   test('Account Type is User', async () => {
-    const accountDetails = await index.getAccountDetails(process.env.userAgent, process.env.accountTypeUser, auth);
+    const accountDetails = await index.getAccountDetails(process.env.userAgent, process.env.userAccount, auth);
     const accountType = accountDetails.type;
     expect(accountType).toBe('User');
   });
   test('Account Type is Organization', async () => {
-    const accountDetails = await index.getAccountDetails(process.env.userAgent, process.env.accountTypeOrg, auth);
+    const accountDetails = await index.getAccountDetails(process.env.userAgent, process.env.orgAccount, auth);
     const accountType = accountDetails.type;
     expect(accountType).toBe('Organization');
   });
 });
+
 
 describe('Github repo list for user Account', () => {
   const githubUsername = process.env.userAgent;
   const githubAuthorization = process.env.authorization;
   const auth = index.githubAuth(githubUsername, githubAuthorization);
   test('Status Code is 200', async () => {
-    const accountDetails = await index.getAccountDetails(githubUsername, process.env.accountTypeUser, auth);
+    const accountDetails = await index.getAccountDetails(githubUsername, process.env.userAccount, auth);
     const accountType = accountDetails.type;
     const getReposList = await index.getReposList(auth, githubUsername, githubUsername, accountDetails);
     const statusCode = getReposList.statusCode;
@@ -57,7 +58,7 @@ describe('Github repo list for user Account', () => {
     expect(statusCode).toBe(200);
   });
   test('Repo count is greater than 1', async () => {
-    const accountDetails = await index.getAccountDetails(githubUsername, process.env.accountTypeUser, auth);
+    const accountDetails = await index.getAccountDetails(githubUsername, process.env.userAccount, auth);
     const getReposList = await index.getReposList(auth, githubUsername, githubUsername, accountDetails);
     const repoCount = getReposList.user.length;
     //   // Checks to make sure we have at least 1 repo in the account searched.
@@ -66,22 +67,22 @@ describe('Github repo list for user Account', () => {
 });
 
 
-describe('Github repo list for Organization Account', () => {
+describe('Github repo list for Organization  Account', () => {
   const githubUsername = process.env.userAgent;
   const githubAuthorization = process.env.authorization;
   const auth = index.githubAuth(githubUsername, githubAuthorization);
   test('Status Code is 200', async () => {
-    const accountDetails = await index.getAccountDetails(githubUsername, process.env.accountTypeOrg, auth);
+    const accountDetails = await index.getAccountDetails(githubUsername, process.env.userAccount, auth);
     const accountType = accountDetails.type;
-    const getReposList = await index.getReposList(auth, githubUsername, process.env.accountTypeOrg, accountDetails);
+    const getReposList = await index.getReposList(auth, githubUsername, githubUsername, accountDetails);
     const statusCode = getReposList.statusCode;
     const repoCount = getReposList.user.length;
     // Makes sure that we have gotten a 200 response from Github when trying to get a list of repos in
     expect(statusCode).toBe(200);
   });
   test('Repo count is greater than 1', async () => {
-    const accountDetails = await index.getAccountDetails(githubUsername, process.env.accountTypeOrg, auth);
-    const getReposList = await index.getReposList(auth, githubUsername, process.env.accountTypeOrg, accountDetails);
+    const accountDetails = await index.getAccountDetails(githubUsername, process.env.userAccount, auth);
+    const getReposList = await index.getReposList(auth, githubUsername, githubUsername, accountDetails);
     const repoCount = getReposList.user.length;
     //   // Checks to make sure we have at least 1 repo in the account searched.
     expect(repoCount).toBeGreaterThan(0);
