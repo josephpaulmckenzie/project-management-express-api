@@ -119,13 +119,15 @@ const createGithubResultsJson = async (userResult, searchforuser, githubRepo) =>
         logger.info(`Creating json response for ${searchforuser}'s repo ${githubRepo}`);
         const searchResults = await userResult.user.map((github) => ({
             repo: githubRepo,
-            loginId: `${github.author.login}`,
+            loginId: `${github.committer.id}`,
             commiterEmail: `${github.commit.author.email}`,
             commitDate: `${github.commit.author.date}`,
             commitMessage: `${github.commit.message}`,
             sha: `${github.sha}`
         }));
+
         logger.info(`Created json response for ${searchforuser}'s repo ${githubRepo}`);
+
         return searchResults;
     }
     catch (error) {
@@ -168,7 +170,16 @@ const listrepos = async (pathParameters, body) => {
     }
 };
 
+const hi = async () => {
+    const githubConfig = await githubAuth("josephpaulmckenzie", "ff3979f2e19e45ad815585f85184934678f34786");
 
+    const userResult = await getRepoResultsFromSearch(githubConfig, "josephpaulmckenzie", "CBG");
+    const results = await createGithubResultsJson(userResult, "josephpaulmckenzie", "CBG");
+
+};
+
+
+hi();
 
 exports.handler = async (event) => {
     // event.context['http-method']
@@ -201,7 +212,14 @@ exports.handler = async (event) => {
         };
     }
     else {
-        return "OHNO";
+        return {
+            statusCode: 404,
+            body: JSON.stringify({ "message": "Route not found" }),
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*"
+            }
+        };
     }
     // return body
 };
@@ -210,4 +228,6 @@ module.exports.githubAuth = githubAuth;
 module.exports.getAccountDetails = getAccountDetails;
 module.exports.getReposList = getReposList;
 module.exports.verifyRepoExists = verifyRepoExists;
+module.exports.getRepoResultsFromSearch = getRepoResultsFromSearch;
+module.exports.createGithubResultsJson = createGithubResultsJson;
 //# sourceMappingURL=index.js.map
