@@ -1,10 +1,9 @@
 const index = require('../lib/index');
 require("dotenv").config();
 describe('Github Authorization Header', () => {
-  beforeAll(async () => {
-    const auth = index.githubAuth(process.env.userAgent, process.env.authorization);
-    headers = auth.headers;
-  });
+  const auth = index.githubAuth(process.env.userAgent, process.env.authorization);
+  const headers = auth.headers;
+
   test('Correct GET method is supplied', () => {
     const method = auth.method;
     expect(method).toBe("GET");
@@ -52,19 +51,19 @@ describe('Check User\'s repo status', () => {
   });
   test('User\'s Repo name comes back correct', async () => {
     const repoName = exists.user.name;
-    expect(repoName).toBe("project-management-typescript-api");
+    expect(repoName).toBe(process.env.userRepo);
   });
   test('User\'s Repo owner name comes back correct', async () => {
     const ownerName = exists.user.owner.login;
-    expect(ownerName).toBe("josephpaulmckenzie");
+    expect(ownerName).toBe(process.env.userAgent);
   });
 });
 
-describe('Check commits', () => {
-  test('Commits are returned on searched user for repo', async () => {
-    const auth = index.githubAuth(process.env.userAgent, process.env.authorization);
-    const userResult = await index.getRepoResultsFromSearch(auth, process.env.userAgent, "CBG");
-    const results = await index.createGithubResultsJson(userResult, process.env.userAgent, "CBG");
-    expect(200).toBe(200);
-  });
-});
+// describe('Check commits', () => {
+//   test('Commits are returned on searched user for repo', async () => {
+//     const auth = index.githubAuth(process.env.userAgent, process.env.authorization);
+//     const userResult = await index.getRepoResultsFromSearch(auth, process.env.userAgent, process.env.userRepo);
+//     const results = await index.createGithubResultsJson(userResult, process.env.userAgent, process.env.userRepo);
+//     expect(200).toBe(200);
+//   });
+// });

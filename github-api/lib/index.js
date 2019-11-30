@@ -1,13 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 // tslint:disable-next-line: no-var-requires
+require("dotenv").config();
+
 const logger = require("custom-logging-and-alerts");
 // tslint:disable-next-line: no-var-requires
 const fetch = require("node-fetch");
 const githubAuth = (githubUsername, githubToken) => {
+    const token = process.env.authorization || githubToken;
     logger.info("Setting up the configuration for the Github API");
     // Takes in a string of the username and the token and converts it to a bae64 (or multiple other methods) encrypted string.
-    const authorization = "Basic " + Buffer.from(githubUsername + ":" + githubToken).toString("base64");
+    const authorization = "Basic " + Buffer.from(githubUsername + ":" + token).toString("base64");
     const config = {
         method: "GET",
         headers: {
@@ -17,7 +20,6 @@ const githubAuth = (githubUsername, githubToken) => {
             Authorization: authorization
         }
     };
-    console.log("!!!!!!!!!!", config)
     return config;
 };
 
@@ -169,17 +171,6 @@ const listrepos = async (pathParameters, body) => {
         return error;
     }
 };
-
-const hi = async () => {
-    const githubConfig = await githubAuth("josephpaulmckenzie", "ff3979f2e19e45ad815585f85184934678f34786");
-
-    const userResult = await getRepoResultsFromSearch(githubConfig, "josephpaulmckenzie", "CBG");
-    const results = await createGithubResultsJson(userResult, "josephpaulmckenzie", "CBG");
-
-};
-
-
-hi();
 
 exports.handler = async (event) => {
     // event.context['http-method']

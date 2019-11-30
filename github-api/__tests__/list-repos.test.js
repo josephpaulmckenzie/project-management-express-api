@@ -36,18 +36,19 @@ describe('Github Authorization Header', () => {
 
 describe('Github Account Type', () => {
   test('Account Type is User', async () => {
-    const auth = index.githubAuth(process.env.userAgent, process.env.authorization);
-    const accountDetails = await index.getAccountDetails(process.env.userAgent, process.env.userAccount, auth)
+    const auth = await index.githubAuth(process.env.userAgent, process.env.authorization);
+    const accountDetails = await index.getAccountDetails(process.env.userAgent, process.env.userAccount, auth);
     const accountType = accountDetails.type;
     expect(accountType).toBe('User');
   });
-  test('Account Type is Organization', async () => {
-    const auth = index.githubAuth(process.env.userAgent, process.env.authorization);
-    const accountDetails = await index.getAccountDetails(process.env.userAgent, process.env.orgAccount, auth);
-    const accountType = accountDetails.type;
-    expect(accountType).toBe('Organization');
-  });
 });
+test('Account Type is Organization', async () => {
+  const auth = index.githubAuth(process.env.userAgent, process.env.authorization);
+  const accountDetails = await index.getAccountDetails(process.env.userAgent, process.env.orgAccount, auth);
+  const accountType = accountDetails.type;
+  expect(accountType).toBe('Organization');
+});
+
 
 describe('Github repo list for user Account', () => {
   const githubUsername = process.env.userAgent;
