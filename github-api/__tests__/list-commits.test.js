@@ -1,5 +1,7 @@
 const index = require('../lib/index');
 require("dotenv").config();
+
+
 const moment = require('moment')
 describe('Github Authorization Header', () => {
     const auth = index.githubAuth(process.env.userAgent, process.env.authorization);
@@ -64,9 +66,9 @@ test('User\'s Repo owner name comes back correct', async () => {
 describe('Check commits in repo for searched user', () => {
     beforeAll(async () => {
         const auth = index.githubAuth(process.env.userAgent, process.env.authorization);
-        await index.verifyRepoExists(auth, process.env.userAgent, "project-management-typescript-api");
-        const userResult = await index.getRepoResultsFromSearch(auth, process.env.userAgent, "project-management-typescript-api");
-        results = await index.createGithubResultsJson(userResult, process.env.userAgent, "project-management-typescript-api");
+        await index.verifyRepoExists(auth, process.env.userAgent, process.env.userRepo);
+        const userResult = await index.getRepoResultsFromSearch(auth, process.env.userAgent, process.env.userRepo);
+        results = await index.createGithubResultsJson(userResult, process.env.userAgent, process.env.userRepo);
         return [results];
     });
 
