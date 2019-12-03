@@ -13,9 +13,10 @@
   "author": "Joseph Paul Mckenzie <joseph.p.mckenzie84@gmail.com> (https://www.github.com/josephpaulmckenzie)",
   "license": "ISC",
   "dependencies": {
-    "custom-logging-and-alerts": "file:../node_modules_and_lambda_layers/custom-logging-and-alerts",
+    "custom-logging-and-alerts": "file:../lambda_layers/custom-logging-and-alerts",
     "dot-env": "0.0.1",
     "dotenv": "^8.2.0",
+    "moment": "^2.24.0",
     "node-fetch": "^2.6.0",
     "ts-jest": "^24.2.0"
   },

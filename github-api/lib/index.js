@@ -1,11 +1,8 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-// tslint:disable-next-line: no-var-requires
 require("dotenv").config();
-
 const logger = require("custom-logging-and-alerts");
-// tslint:disable-next-line: no-var-requires
 const fetch = require("node-fetch");
+
 const githubAuth = (githubUsername, githubToken) => {
     const token = process.env.authorization || githubToken;
     logger.info("Setting up the configuration for the Github API");
@@ -120,9 +117,9 @@ const createGithubResultsJson = async (userResult, searchforuser, githubRepo) =>
     try {
         logger.info(`Creating json response for ${searchforuser}'s repo ${githubRepo}`);
         const searchResults = await userResult.user.map((github) => ({
-            repo: githubRepo,
-            loginId: `${github.committer.id}`,
-            commiterEmail: `${github.commit.author.email}`,
+            repoName: githubRepo,
+            loginId: github.commit.committer.Id,
+            committerEmail: `${github.commit.author.email}`,
             commitDate: `${github.commit.author.date}`,
             commitMessage: `${github.commit.message}`,
             sha: `${github.sha}`
@@ -144,7 +141,6 @@ const listcommits = async (pathParameters, body) => {
         const { githubUsername, githubToken } = body;
         const githubConfig = await githubAuth(githubUsername, githubToken);
         await getAccountDetails(githubUsername, searchforuser, githubConfig);
-        await verifyRepoExists(githubConfig, searchforuser, githubRepo);
         const userResult = await getRepoResultsFromSearch(githubConfig, searchforuser, githubRepo);
         const results = await createGithubResultsJson(userResult, searchforuser, githubRepo);
         logger.info(`Returning json response for ${searchforuser}'s repo ${githubRepo} to the API`);
@@ -222,3 +218,14 @@ module.exports.verifyRepoExists = verifyRepoExists;
 module.exports.getRepoResultsFromSearch = getRepoResultsFromSearch;
 module.exports.createGithubResultsJson = createGithubResultsJson;
 //# sourceMappingURL=index.js.map
+
+const hello = async () => {
+
+    const auth = githubAuth(process.env.userAgent, process.env.authorization);
+    await verifyRepoExists(auth, process.env.userAgent, "project-management-typescript-api");
+    const userResult = await getRepoResultsFromSearch(auth, process.env.userAgent, "project-management-typescript-api");
+    const results = await createGithubResultsJson(userResult, process.env.userAgent, "project-management-typescript-api");
+    console.log(results[0].commitMessage)
+}
+
+hello();
